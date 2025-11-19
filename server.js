@@ -68,6 +68,7 @@ app.post('/api/v1/mock/twilio/messages', (req, res) => {
       price: "-0.0079",
       price_unit: "USD"
     };
+    
 
     console.log(`[${new Date().toLocaleString()}] Message sent:`, {
       sid: response.sid,
@@ -76,6 +77,37 @@ app.post('/api/v1/mock/twilio/messages', (req, res) => {
     });
 
     res.status(200).json(response);
+
+    // 往企业微信发送验证码
+    const webhookUrl = process.env.WECHAT_WEBHOOK_URL;
+    
+    if (!webhookUrl) {
+      console.warn('企业微信 Webhook URL 未配置，跳过通知发送');
+      return;
+    }
+    
+    const wechatMessage = {
+      msgtype: "text",
+      text: {
+        content: `验证码通知\n\n号码: ${to}\n验证码: ${body}\n时间: ${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`
+      }
+    };
+
+    fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(wechatMessage)
+    })
+    .then(wechatRes => wechatRes.json())
+    .then(wechatData => {
+      console.log('企业微信通知发送成功:', wechatData);
+    })
+    .catch(err => {
+      console.error('企业微信通知发送失败:', err);
+    });
+    
   } catch (error) {
     console.error('Error processing request:', error);
     res.status(500).json({
