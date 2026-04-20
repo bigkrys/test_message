@@ -1,57 +1,57 @@
 # Twilio Messages Mock API
 
-一个模拟Twilio短信API的快速接口，允许所有跨域访问。
+A lightweight mock API that simulates Twilio's SMS messaging endpoint. CORS is enabled for all origins, making it convenient for local development and integration testing.
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 启动服务器
+### Start the server
 ```bash
 npm start
 ```
 
-服务器将在端口8888上运行：
-- API接口：http://localhost:8888/api/v1/mock/twilio/messages
-- 健康检查：http://localhost:8888/health
+The server runs on port `8888`:
+- API endpoint: http://localhost:8888/api/v1/mock/twilio/messages
+- Health check: http://localhost:8888/health
 
-### 后台运行
+### Run in the background
 ```bash
 nohup node server.js > server.log 2>&1 &
 ```
 
-## 📡 API接口
+## 📡 API
 
 ### POST /api/v1/mock/twilio/messages
 
-发送模拟短信消息
+Send a mock SMS message.
 
-**请求示例：**
+**Example request:**
 ```bash
 curl -X POST http://localhost:8888/api/v1/mock/twilio/messages \
   -H "Content-Type: application/json" \
   -d '{
     "to": "+8613800138000",
-    "from": "+12345678900", 
-    "body": "Your SOLAI verification code is: 1234. Valid for 5 minutes."
+    "from": "+12345678900",
+    "body": "Your verification code is: 1234. Valid for 5 minutes."
   }'
 ```
 
-**请求体格式：**
+**Request body:**
 ```json
 {
   "to": "+8613800138000",
-  "from": "+12345678900", 
-  "body": "Your SOLAI verification code is: 1234. Valid for 5 minutes."
+  "from": "+12345678900",
+  "body": "Your verification code is: 1234. Valid for 5 minutes."
 }
 ```
 
-**响应示例 (200 OK)：**
+**Example response (200 OK):**
 ```json
 {
   "sid": "SM1761833998049RT2MB2",
   "status": "sent",
   "to": "+8613800138000",
   "from": "+12345678900",
-  "body": "Your SOLAI verification code is: 1234. Valid for 5 minutes.",
+  "body": "Your verification code is: 1234. Valid for 5 minutes.",
   "date_created": "2025-10-30T14:19:58.048Z",
   "date_updated": "2025-10-30T14:19:58.048Z",
   "date_sent": "2025-10-30T14:19:58.048Z",
@@ -61,36 +61,36 @@ curl -X POST http://localhost:8888/api/v1/mock/twilio/messages \
 }
 ```
 
-## 🔧 其他接口
+## 🔧 Other endpoints
 
 ### GET /health
-健康检查接口
+Health check.
 ```bash
 curl http://localhost:8888/health
 ```
 
 ### GET /
-API信息和端点列表
+API information and endpoint list.
 ```bash
 curl http://localhost:8888/
 ```
 
-## ⚠️ 注意事项
+## ⚠️ Notes
 
-1. **Content-Type必须设置为 `application/json`**
-2. 确保请求体包含所有必需字段：`to`, `from`, `body`
-3. 服务器配置了CORS，允许所有来源的跨域请求
-4. SID是动态生成的，格式为：`SM{timestamp}{random}`
+1. `Content-Type` must be set to `application/json`.
+2. The request body must include all required fields: `to`, `from`, `body`.
+3. CORS is enabled for all origins.
+4. The `sid` is generated dynamically in the form `SM{timestamp}{random}`.
 
-## 🐛 故障排除
+## 🐛 Troubleshooting
 
-如果遇到"Cannot destructure property 'to' of 'req.body' as it is undefined"错误：
+If you see the error `Cannot destructure property 'to' of 'req.body' as it is undefined`:
 
-1. 检查Content-Type是否设置为 `application/json`
-2. 确保请求体是有效的JSON格式
-3. 验证所有必需字段都已包含
+1. Check that `Content-Type` is set to `application/json`.
+2. Ensure the request body is valid JSON.
+3. Verify all required fields are present.
 
-查看服务器日志：
+Tail the server log:
 ```bash
 tail -f server.log
 ```
